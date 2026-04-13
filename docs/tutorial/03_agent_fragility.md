@@ -1,48 +1,80 @@
 # Chapter 3: Agent Fragility
 
-## Why Agents Become Fragile
+## Why This Chapter Exists
 
-Agents are fragile because they combine:
+If tool-calling agents are so useful, why do even strong models behave unreliably in the wild?
 
-- natural-language instruction following
-- tool APIs
-- persistent or semi-persistent state
-- multi-step reasoning under uncertainty
+Because agent failures are usually not a single bug. They are the product of:
 
-That creates more ways to go wrong than plain question answering.
+- long horizons
+- partial observability
+- changing context
+- irreversible side effects
+- weak boundary management
 
-## Common Failure Modes
+That combination makes agents fragile in ways that plain chatbots are not.
 
-### Over-trusting instructions
-The agent treats an untrusted text fragment as if it were part of the user’s goal.
+## Four Main Sources of Fragility
 
-### Tool misuse
-The agent picks a tool that is syntactically valid but semantically unsafe.
+### 1. Instruction confusion
+The system stops distinguishing between:
 
-### State corruption
-A bad action changes environment state in a way the user did not intend.
+- the user's actual goal
+- background content
+- tool-return text
+- attacker-controlled instructions
 
-### Unsafe delegation
-The agent offloads judgment to another step, tool, or prompt without preserving the original boundary.
+### 2. Tool confusion
+The system can call tools, but it may still:
 
-## A Useful Shift in Perspective
+- choose the wrong tool
+- call the right tool with the wrong arguments
+- overuse writes when reads would suffice
 
-In ordinary LLM safety, we often ask:
+### 3. State confusion
+The model often reasons from a mental summary of state rather than the real underlying environment.  
+That summary can drift from reality.
 
-- “Will the model say something unsafe?”
+### 4. Oversight confusion
+The system may prematurely conclude the task is done because the transcript feels complete, even when the environment outcome is wrong.
 
-In agentic safety, we ask:
+## Why Long-Horizon Tasks Are Worse
 
-- “Will the system do something unsafe?”
+The longer the loop, the more these errors compound:
 
-That shift is why environment design and evaluation are central.
+- one bad read contaminates later reasoning
+- one wrong tool call changes the state seen by future steps
+- one ambiguous tool result can produce multiple bad downstream actions
 
-## Tutorial View
+This is why long-horizon coding agents, browser agents, and enterprise tool agents have pushed evaluation and harness design to the foreground.
 
-The rest of Part II turns these vague failure modes into:
+## Capability vs Context
 
-- attack surfaces
-- concrete safety requirements
-- environment-side evaluation metrics
+A useful modern framing is:
+
+- some failures are **capability failures**
+- many others are **context failures**
+
+In practice, teams often discover that the model is not strictly incapable; rather, the harness is surfacing too much, too little, or the wrong kind of information at the wrong time.
+
+That is one reason **context engineering** is now treated as a core agent skill.
+
+## Why Fragility Becomes a Safety Problem
+
+Fragility is not just an inconvenience. It is what turns:
+
+- ambiguous instructions
+- polluted content
+- overly broad tool access
+
+into concrete unsafe behavior.
+
+That is the bridge from "agent reliability" to "agentic safety."
+
+## Research Anchors
+
+- [Effective context engineering for AI agents (Anthropic)](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- [Building effective agents (Anthropic)](https://www.anthropic.com/research/building-effective-agents)
+- [Harness engineering: leveraging Codex in an agent-first world (OpenAI)](https://openai.com/index/harness-engineering/)
 
 Next: [Chapter 4](04_attack_surfaces.md)

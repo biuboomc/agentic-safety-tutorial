@@ -1,18 +1,45 @@
 # Chapter 10: AgentDojo Showcase
 
-The tutorial does not aim to reproduce the full AgentDojo benchmark.  
-Instead, it uses AgentDojo-style tasks as a realistic held-out showcase.
+## Why This Chapter Exists
 
-## Why Use a Showcase Slice
+The tutorial curriculum is intentionally small and transparent.  
+That is good for teaching, but readers also need to see that the learned behaviors matter outside of toy tasks.
 
-The curriculum is deliberately small and transparent.  
-That is good for teaching, but we still want evidence that the learned behaviors transfer beyond toy tasks.
+This is where AgentDojo-style evaluation becomes useful.
 
-## What the Showcase Demonstrates
+## Why A Showcase Slice Instead Of The Full Benchmark
 
-- the agent can still complete benign tasks
-- the agent resists prompt-level and content-level attacks better than before
-- the capstone did not merely overfit to one hand-authored example
+The tutorial does not aim to reproduce a full benchmark leaderboard.  
+That would shift the focus away from understanding and toward benchmarking logistics.
+
+A held-out showcase slice is enough to demonstrate:
+
+- whether the trained system preserves benign utility on realistic tasks
+- whether it resists injected instructions better than before
+- whether the curriculum taught something more general than memorized toy behavior
+
+## What A Showcase Slice Should Measure
+
+The tutorial keeps the same high-level metrics:
+
+- `utility`
+- `utility_under_attack`
+- `ASR`
+
+The point is not that these are the only useful metrics, but that they preserve the key tradeoff:
+
+- do the job
+- do not get hijacked
+
+## What A Showcase Slice Cannot Tell You
+
+A benchmark slice is still a projection. It cannot fully answer:
+
+- whether the system is safe in production
+- whether the tool model matches the real world
+- whether long-run adaptation or distribution shift will break the policy
+
+So the tutorial uses AgentDojo not as "the truth", but as a disciplined external check.
 
 ## Showcase Manifest
 
@@ -20,15 +47,17 @@ See:
 
 - [agentdojo_showcase_manifest.json](../../examples/tutorial/agentdojo_showcase_manifest.json)
 
-It defines a held-out extraction slice rather than shipping benchmark data inside the tutorial repo.
+It defines a held-out extraction slice rather than shipping benchmark data inside the repository.
 
-## Typical Outcome
+## Final Lesson
 
-The tutorial’s success criterion is not “beat the benchmark.”  
+The tutorial’s success criterion is not "beat the benchmark."  
 It is:
 
-- understand the full stack
+- understand the full system stack
 - train a small safety-oriented agent
 - show a measurable before/after difference on realistic held-out tasks
 
-That is enough to turn the tutorial into a launchpad for deeper research or system-building work.
+That is enough to turn the tutorial into a useful launchpad for research or engineering work.
+
+Next: [Research Map](11_research_map.md)

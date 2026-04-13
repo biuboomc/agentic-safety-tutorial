@@ -1,10 +1,57 @@
 # Chapter 7: Using `tasksvc` as the Capstone Environment
 
-This is where the tutorial begins to use the codebase directly.
+## Why This Chapter Exists
 
-## The Environment Contracts
+The first six chapters were mostly about concepts.  
+This chapter maps those concepts into a concrete system.
 
-The capstone only needs a small subset of the full internal pipeline:
+The key move is:
+
+- stop treating the model as the whole agent
+- start treating the environment, harness, and evaluator as first-class parts of the system
+
+That is what `tasksvc` gives us.
+
+## What `tasksvc` Is In Tutorial Terms
+
+For the purposes of this tutorial, `tasksvc` plays four roles:
+
+### 1. Environment server
+It exposes tasks as executable episodes.
+
+### 2. Tool sandbox
+It owns tool execution, state updates, and isolation.
+
+### 3. Evaluation layer
+It checks benign success and risk success explicitly.
+
+### 4. Curriculum packaging layer
+It turns source tasks into bundles that are easy to run repeatedly.
+
+## The Most Important Distinction
+
+In this tutorial, we separate:
+
+- the **model**
+- the **agent harness**
+- the **environment**
+- the **evaluation harness**
+
+The split in this repo is roughly:
+
+- model client: external LLM endpoint
+- agent harness: [agent_rollout.py](../../tasksvc/runtime/agent_rollout.py)
+- environment server: [server.py](../../tasksvc/runtime/server.py)
+- tool sandbox: [tool_runtime.py](../../tasksvc/runtime/tool_runtime.py)
+- batch evaluation harness: [batch_rollout.py](../../tasksvc/runtime/batch_rollout.py)
+
+## The Internal Object Path
+
+Inside the repo, the main environment path is:
+
+`TaskPlanSpec -> TaskDraft -> RuntimeTaskBundle -> Episode`
+
+You do not need every field of these objects to understand the capstone. The most important pieces are:
 
 - `user_query`
 - tool schemas
@@ -13,25 +60,30 @@ The capstone only needs a small subset of the full internal pipeline:
 - `risk_success_rule`
 - scenarios such as `clean` and `attacked`
 
-## The Core Internal Path
+## Why Bundles Matter
 
-Inside this repo, the relevant chain is:
+A runtime bundle is the point where an abstract task becomes an executable environment.
 
-`TaskPlanSpec -> TaskDraft -> RuntimeTaskBundle -> Episode`
-
-You do not need to master every planner or benchmark detail to use that chain as an environment.
-
-## What a Runtime Bundle Gives You
-
-A runtime bundle packages:
+It packages:
 
 - the task-facing query
 - tool implementations
 - initial state
-- evaluation rules
 - scenario-specific overlays
+- benign and risk evaluation rules
 
-That is the point where an abstract task becomes an executable environment.
+That makes it possible to keep the environment side stable even when the model or trainer changes.
+
+## Why This Is Also A Harness Story
+
+One of the most useful lessons of recent agent engineering is that the quality of the **surrounding system** often dominates the quality of the model.
+
+`tasksvc` is our way of making that surrounding system explicit:
+
+- the environment is no longer hidden inside a prompt
+- the finish condition is no longer implicit
+- attacked scenarios are no longer hand-waved
+- transcript and outcome are both available for evaluation
 
 ## Tutorial Strategy
 

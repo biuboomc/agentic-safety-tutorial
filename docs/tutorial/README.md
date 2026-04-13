@@ -1,37 +1,49 @@
 # Tutorial Index
 
-This tutorial is organized as a gradual transition:
+This tutorial is intentionally staged.
 
-1. **Agent basics**
-2. **Agentic safety**
-3. **Environment, evaluation, and training**
+The first half is about the **ideas**:
 
-The first half is concept-first.  
-The second half is a capstone that uses the code in this repository.
+- what agents are
+- how agent engineering evolved
+- why agentic safety is different from ordinary LLM safety
+- what concepts like `harness`, `trajectory`, `outcome`, and `context engineering` really mean
 
-## Recommended Reading Path
+The second half is about the **system**:
 
-### Part I: Agent Basics
+- how those concepts map into `tasksvc`
+- how we package tasks into environments
+- how we export rollouts to a trainer
+- how we evaluate a small trained system on held-out AgentDojo-style tasks
+
+## Part I: Agent Basics
+
 - [00 Overview](00_overview.md)
 - [01 Why Agents](01_why_agents.md)
 - [02 Tool-Calling Agents](02_tool_calling_agents.md)
 - [03 Agent Fragility](03_agent_fragility.md)
 
-### Part II: Agentic Safety
+## Part II: Agentic Safety
+
 - [04 Attack Surfaces](04_attack_surfaces.md)
 - [05 Safety Requirements](05_safety_requirements.md)
 - [06 Evaluating Safe Agents](06_evaluating_safe_agents.md)
 
-### Part III: Capstone
+## Part III: Capstone
+
 - [07 tasksvc as an Environment](07_tasksvc_as_environment.md)
 - [08 Tutorial Curriculum](08_tutorial_curriculum.md)
 - [09 Slime Capstone](09_slime_capstone.md)
 - [10 AgentDojo Showcase](10_agentdojo_showcase.md)
 
+## Appendix
+
+- [11 Research Map](11_research_map.md)
+
 ## How To Use This Repo While Reading
 
-- If you want only concepts first, stop after Chapter 6.
-- If you want to build a working system, continue into Chapters 7-10.
-- If you already know the concepts and want the capstone immediately, start at Chapter 7 and keep the earlier chapters as reference.
+- If you only want the conceptual foundations, read through Chapter 6.
+- If you already know the concepts and want the environment/training path, start at Chapter 7.
+- If you want external reading first, jump to [11 Research Map](11_research_map.md), then come back to the core chapters.
 
 The tutorial assets live in [examples/tutorial](../../examples/tutorial/README.md).

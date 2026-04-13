@@ -1,51 +1,88 @@
 # Chapter 0: Overview
 
-## Goal
+## Why This Tutorial Is Structured This Way
 
-The goal of this tutorial is to help you **understand and build a safe tool-calling agent system**.
+A lot of agent tutorials jump straight into frameworks, SDKs, and demos.  
+That is useful if you only want to ship something quickly, but it often leaves two major blind spots:
+
+1. readers never build a stable mental model of what the **agent system** actually is
+2. safety gets treated like an add-on, instead of something built into the environment and evaluation loop
+
+This tutorial takes the opposite route:
+
+- first, understand the agentic system conceptually
+- then, understand the main safety failure modes
+- only then, wire those ideas into code, environments, and training
+
+## What You Should Leave With
 
 By the end, you should be able to:
 
-- explain the core action-observation loop of an agent
-- identify what makes agentic systems fail differently from plain chat systems
-- represent those failures as explicit tasks, attacks, and metrics
-- run a small end-to-end training and evaluation capstone
+- explain the difference between a model, an agent, a workflow, and a harness
+- describe the engineering evolution from prompt-centric systems to agentic systems
+- identify the main attack surfaces for tool-calling agents
+- explain why transcript-level success can diverge from environment-level success
+- package a small set of safety tasks into an executable environment
+- connect that environment to a trainer and evaluate outcomes
 
-## What This Tutorial Is Not
+## A Practical Definition of "Agent"
 
-- not a pure benchmark-conversion guide
-- not a survey of every agent architecture
-- not a benchmark leaderboard reproduction manual
+Different communities define agents differently.  
+For this tutorial, we use a deliberately practical definition:
 
-Those things can still be built on top of this repo, but they are not the teaching center of gravity.
+- an agent is an LLM-based system that can **use tools in a loop** to pursue a user goal
 
-## The Big Picture
+That definition is intentionally close to recent engineering writing from Anthropic and OpenAI, because it maps well onto real systems.
 
-This tutorial uses a simple progression:
+## Key Terms
 
-1. **What is an agent?**
-2. **Why do agents fail in safety-relevant ways?**
-3. **How do we evaluate those failures?**
-4. **How do we turn that into an environment and a training setup?**
+### Agent loop
+The repeated cycle of model inference, tool selection, tool execution, observation, and continuation.
 
-The code in this repository matters most in steps 3 and 4.
+### Harness
+The orchestration layer around the model. It prepares context, routes tool calls, records the trace, and determines how the system advances.
 
-## Running Theme
+### Sandbox
+The execution boundary where actions actually run. A sandbox constrains what the agent can do and isolates side effects.
 
-The running theme is a **tool-calling LLM agent**:
+### Transcript / trajectory
+The full record of a run: prompts, tool calls, observations, intermediate steps, and messages.
 
-- it receives a user goal
-- it can call tools
-- tool calls change what the agent can observe and do
-- safety failures are therefore partly about behavior, not just text
+### Outcome
+The final state of the environment after the run. This is often more important than the final text output.
 
-That makes agent safety feel much closer to systems engineering than standard prompt-level safety.
+### Evaluation harness
+The infrastructure that runs many tasks, records outputs and state, grades results, and aggregates metrics.
 
-## What Lives Where
+### Context engineering
+The practice of deciding what information is available to the model at each step, and in what form.
 
-- Tutorial chapters: [docs/tutorial](D:/codex_workspace/agentic_rl_tasksvc_demo/docs/tutorial)
-- Tutorial tasks and manifests: [examples/tutorial](../../examples/tutorial/README.md)
-- Runtime environment and evaluation: [tasksvc](../../tasksvc)
-- Tutorial-to-slime adapter: [slime_adapter.py](../../tasksvc/tutorial/slime_adapter.py)
+## A Short Timeline
+
+The broad arc of the field looks like this:
+
+- **2022:** prompt engineering and chain-of-thought dominated applied LLM work
+- **2022-2023:** ReAct made reasoning and acting an explicit loop
+- **2023:** Toolformer and related work made tool selection part of the modeling problem
+- **2023:** Voyager highlighted memory, skills, and open-ended long-horizon behavior
+- **2024-2025:** teams shifted toward production agent engineering, including evaluation, observability, and tool/runtime design
+- **2025-2026:** harness engineering and context engineering became first-class concerns for long-running, high-autonomy systems
+
+You do not need to memorize this timeline, but it helps explain why so much current discussion is about scaffolds, traces, and environments rather than just prompts.
+
+## Research Anchors
+
+- [ReAct (2022/2023)](https://arxiv.org/abs/2210.03629)
+- [Toolformer (2023)](https://arxiv.org/abs/2302.04761)
+- [Voyager (2023)](https://arxiv.org/abs/2305.16291)
+- [A practical guide to building agents (OpenAI)](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/)
+- [Building effective agents (Anthropic)](https://www.anthropic.com/research/building-effective-agents)
+
+## What Lives Where In This Repo
+
+- tutorial chapters: [docs/tutorial](../../docs/tutorial)
+- tutorial tasks and manifests: [examples/tutorial](../../examples/tutorial/README.md)
+- runtime environment and evaluation: [tasksvc](../../tasksvc)
+- tutorial-to-slime adapter: [slime_adapter.py](../../tasksvc/tutorial/slime_adapter.py)
 
 Next: [Chapter 1](01_why_agents.md)

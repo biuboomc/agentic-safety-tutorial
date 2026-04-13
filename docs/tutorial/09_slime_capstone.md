@@ -1,31 +1,63 @@
 # Chapter 9: Slime Capstone
 
-This chapter turns the environment into a training loop.
+## Why This Chapter Exists
 
-## What the Repo Provides
+The earlier chapters argue that agentic safety must be treated as a systems problem.  
+This chapter turns that argument into a concrete training path.
 
-This repository provides:
+The point is not to build a massive training stack from scratch.  
+The point is to make the boundary between environment and trainer explicit and usable.
 
-- rollout generation through `tasksvc`
-- stable episode and batch outputs
-- a tutorial-facing slime adapter:
-  - [slime_adapter.py](../../tasksvc/tutorial/slime_adapter.py)
-- wrapper scripts for:
-  - rollout export
-  - slime launch
+## Why `slime`
 
-## What the Repo Does Not Vendor
+This tutorial treats `slime` as the trainer-side system and `tasksvc` as the environment-side system.
 
-The repository does not vendor the `slime` framework itself.  
-Instead, it stabilizes the data boundary so you can attach your local slime installation.
+That division is pedagogically useful because it forces us to define:
 
-## Capstone Path
+- what data the trainer actually needs
+- which parts of the problem belong in the environment
+- which parts belong in policy learning
 
-1. build the curriculum
-2. run tutorial rollouts
-3. export slime-ready JSONL
-4. launch slime with your local command template
-5. evaluate the resulting policy on a showcase slice
+## The Trainer Boundary
+
+The key training artifact is not a benchmark row. It is a **rollout record**.
+
+For a tutorial-scale run, the trainer needs at least:
+
+- task id
+- split
+- clean scenario record
+- attacked scenario record
+- transcript / messages
+- tool calls
+- reward trace
+- task success
+- risk success
+
+That is exactly what the tutorial-facing adapter exports.
+
+## The Adapter Layer
+
+See:
+
+- [slime_adapter.py](../../tasksvc/tutorial/slime_adapter.py)
+
+The adapter turns tasksvc batch results into a stable JSONL format that keeps:
+
+- utility
+- utility under attack
+- ASR
+- clean and attacked transcripts
+- summary metadata for downstream training or analysis
+
+## Recommended Capstone Flow
+
+1. build the tutorial curriculum
+2. start the local environment server
+3. run curriculum rollouts
+4. export slime-ready JSONL
+5. launch a slime run
+6. compare pre-training and post-training behavior on a held-out slice
 
 ## Key Scripts
 
@@ -35,19 +67,32 @@ Instead, it stabilizes the data boundary so you can attach your local slime inst
 - export training data: [tutorial_export_slime_dataset.py](../../scripts/tutorial_export_slime_dataset.py)
 - start training: [tutorial_train_with_slime.py](../../scripts/tutorial_train_with_slime.py)
 
-## Why an Adapter Layer Matters
+## What To Keep Fixed In Early Experiments
 
-The adapter prevents the tutorial from depending on internal generation details.
+To keep the tutorial interpretable, the first run should keep most things fixed:
 
-The slime-facing record keeps:
+- task set
+- attack surfaces
+- evaluation metrics
+- environment contracts
 
-- task id
-- split
-- clean and attacked scenario records
-- messages and transcript
-- tool calls and reward trace
-- utility / utility_under_attack / ASR labels
+And vary only a small number of trainer-side choices, such as:
 
-That makes it easier to swap training recipes without rewriting the environment side.
+- rollout count
+- training steps
+- clean/attacked mixture ratio
+
+That makes the capstone easier to reason about.
+
+## Why This Still Counts As A Safety Tutorial
+
+The point of training here is not "fine-tune a model in the abstract."  
+The point is to show that once safety is represented as:
+
+- explicit scenarios
+- explicit risk goals
+- explicit evaluation
+
+it becomes trainable without losing the system-level framing.
 
 Next: [Chapter 10](10_agentdojo_showcase.md)

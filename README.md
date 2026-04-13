@@ -1,39 +1,109 @@
 # Agentic Safety Tutorial
 
-This repository is a tutorial companion for building, evaluating, and training **tool-calling LLM agents** with a deliberate focus on **agentic safety**.
+This repository is a tutorial companion for understanding, building, evaluating, and training **tool-calling LLM agents** with a deliberate focus on **agentic safety**.
 
-The main story is:
+The central claim of this tutorial is simple:
 
-1. understand what makes an agent different from a chatbot
-2. understand why tool use introduces new safety failures
-3. turn those failures into explicit environments, rewards, and evaluation
-4. connect the environment to a training stack and run a small safety-oriented capstone
+- the interesting unit is no longer just the model
+- it is the **model + harness + tools + environment + evaluator**
+- once that system can act, safety becomes a question about **behavior and outcomes**, not only text
 
-This is **not** primarily a benchmark-conversion tutorial.  
-The `tasksvc` environment, benchmark extraction utilities, and batch evaluation code are here to support the later capstone chapters, not to dominate the narrative from the first page.
+That is why this repository does not start from benchmark conversion or infrastructure APIs.  
+It starts from the conceptual arc of modern agentic systems, then gradually introduces `tasksvc`, benchmark slices, and `slime` as capstone tools.
 
-## Who This Is For
+## Why This Tutorial Exists
 
-- researchers who know LLM safety but are new to agentic safety
-- readers who know about agents but want a concrete safety-oriented system to study
-- students, job seekers, and project builders who want a hands-on agent tutorial with a clear engineering payoff
+The field has moved fast:
 
-## Reading Order
+- prompt engineering and chain-of-thought made models more useful
+- **ReAct** showed that reasoning and acting can be interleaved
+- **Toolformer** made tool selection itself part of the modeling problem
+- **Voyager** pushed memory, skills, and open-ended interaction forward
+- production teams then discovered that the hard part is often not "calling a model", but designing the **harness**, the **environment**, the **context pipeline**, and the **evaluation loop**
 
-Start with the tutorial index:
+In other words, the center of gravity has shifted:
 
-- [Tutorial Index](docs/tutorial/README.md)
-- [Chapter 0: Overview](docs/tutorial/00_overview.md)
-- [Chapter 1: Why Agents](docs/tutorial/01_why_agents.md)
-- [Chapter 2: Tool-Calling Agents](docs/tutorial/02_tool_calling_agents.md)
-- [Chapter 3: Agent Fragility](docs/tutorial/03_agent_fragility.md)
-- [Chapter 4: Attack Surfaces](docs/tutorial/04_attack_surfaces.md)
-- [Chapter 5: Safety Requirements](docs/tutorial/05_safety_requirements.md)
-- [Chapter 6: Evaluation](docs/tutorial/06_evaluating_safe_agents.md)
-- [Chapter 7: tasksvc as an Environment](docs/tutorial/07_tasksvc_as_environment.md)
-- [Chapter 8: Tutorial Curriculum](docs/tutorial/08_tutorial_curriculum.md)
-- [Chapter 9: Slime Capstone](docs/tutorial/09_slime_capstone.md)
-- [Chapter 10: AgentDojo Showcase](docs/tutorial/10_agentdojo_showcase.md)
+- from prompt engineering
+- to workflow design
+- to **agent engineering**
+- and, increasingly, to **harness engineering** and **context engineering**
+
+This tutorial is about that shift, with agentic safety as the main lens.
+
+## Working Definition
+
+Throughout this repo, we use a pragmatic definition:
+
+- an **agent** is an LLM-based system that can **use tools in a loop** to pursue a user goal
+- a **workflow** is a more scripted procedure whose control flow is mostly fixed by the developer
+- a **harness** is the orchestration layer that packages context, exposes tools, runs the loop, records the trace, and determines when the interaction is done
+
+This is deliberately close to how recent engineering writing from Anthropic and OpenAI talks about real deployed agents.
+
+## What You Will Learn
+
+By the end, you should be able to:
+
+- explain the engineering evolution from prompt-centric systems to agentic systems
+- define terms like **agent loop**, **harness**, **sandbox**, **trajectory**, **outcome**, and **evaluation harness**
+- distinguish ordinary LLM safety from **agentic safety**
+- reason about prompt injection, tool misuse, state corruption, and verification loops
+- represent a safety task as an executable environment with explicit benign and risk goals
+- connect environment rollouts to a training stack and run a small safety-oriented capstone
+
+## Core Concepts You Will See Repeatedly
+
+### Agent loop
+The repeated cycle of model inference, tool selection, tool execution, observation, and continuation until the system finishes.
+
+### Harness
+The orchestration layer around the model. It prepares context, routes tool calls, records the trace, and determines how the system advances.
+
+### Sandbox
+The execution boundary where actions actually run. A sandbox constrains what the agent can do and isolates side effects.
+
+### Transcript / trajectory
+The full record of a run: prompts, tool calls, observations, intermediate steps, and messages.
+
+### Outcome
+The final state of the environment after the run. This is often more important than the final text output.
+
+### Evaluation harness
+The infrastructure that runs many tasks, records outputs and state, grades results, and aggregates metrics.
+
+### Context engineering
+The practice of deciding what information is available to the model at each step, and in what form.
+
+## Suggested Reading Paths
+
+### Path A: Concept-first
+Best for readers new to agents.
+
+1. [Tutorial Index](docs/tutorial/README.md)
+2. [Overview](docs/tutorial/00_overview.md)
+3. [Why Agents](docs/tutorial/01_why_agents.md)
+4. [Tool-Calling Agents](docs/tutorial/02_tool_calling_agents.md)
+5. [Agent Fragility](docs/tutorial/03_agent_fragility.md)
+6. [Attack Surfaces](docs/tutorial/04_attack_surfaces.md)
+7. [Safety Requirements](docs/tutorial/05_safety_requirements.md)
+8. [Evaluating Safe Agents](docs/tutorial/06_evaluating_safe_agents.md)
+
+### Path B: Capstone-first
+Best for readers who already know agent basics and want the environment/training path.
+
+1. [tasksvc as an Environment](docs/tutorial/07_tasksvc_as_environment.md)
+2. [Tutorial Curriculum](docs/tutorial/08_tutorial_curriculum.md)
+3. [Slime Capstone](docs/tutorial/09_slime_capstone.md)
+4. [AgentDojo Showcase](docs/tutorial/10_agentdojo_showcase.md)
+5. [Research Map](docs/tutorial/11_research_map.md)
+
+### Path C: Research-first
+Best for readers who want the conceptual map before touching code.
+
+1. [Research Map](docs/tutorial/11_research_map.md)
+2. [Why Agents](docs/tutorial/01_why_agents.md)
+3. [Tool-Calling Agents](docs/tutorial/02_tool_calling_agents.md)
+4. [Evaluating Safe Agents](docs/tutorial/06_evaluating_safe_agents.md)
 
 ## Quick Start
 
@@ -89,11 +159,12 @@ python scripts/tutorial_train_with_slime.py ^
   --slime-command-template "slime train --dataset {dataset_jsonl} --output-dir {output_dir}"
 ```
 
-The repository does not vendor `slime`; the tutorial supplies the adapter and wrapper layer that turns tasksvc rollouts into a stable training artifact.
+The repository does not vendor `slime`; it provides the adapter layer that makes the training boundary explicit.
 
 ## Tutorial Assets
 
-- [Tutorial assets README](examples/tutorial/README.md)
+- [Tutorial index](docs/tutorial/README.md)
+- [Research map](docs/tutorial/11_research_map.md)
 - [Tutorial source tasks](examples/tutorial/tutorial_source_tasks.json)
 - [Tutorial curriculum manifest](examples/tutorial/tutorial_curriculum_manifest.json)
 - [AgentDojo showcase manifest](examples/tutorial/agentdojo_showcase_manifest.json)
@@ -101,35 +172,32 @@ The repository does not vendor `slime`; the tutorial supplies the adapter and wr
 ## Repository Layout
 
 - `docs/tutorial/`
-  - the main tutorial chapters
+  - concept chapters, capstone chapters, and research map
 - `examples/tutorial/`
   - hand-authored warmup and safety curriculum tasks
 - `tasksvc/`
-  - environment contracts, source-task conversion, runtime server, rollout, evaluation
+  - environment contracts, source-task conversion, runtime server, rollout, and evaluation logic
 - `tasksvc/tutorial/`
-  - tutorial-facing helpers such as the slime adapter
+  - tutorial-facing adapters, including the slime export layer
 - `scripts/`
-  - tutorial entrypoints for building the curriculum, running rollouts, exporting records, and launching capstone steps
+  - tutorial entrypoints for building curricula, running rollouts, exporting records, and launching capstone steps
 - `tests/`
   - smoke tests for rollout, conversion, and tutorial-specific assets
 
-## What `tasksvc` Does
+## Where `tasksvc` Fits
 
-`tasksvc` is the environment and evaluation layer behind the capstone:
+`tasksvc` is not the whole tutorial. It is the **capstone infrastructure**.
 
-- converts source tasks into `TaskDraft` artifacts
-- assembles drafts into `RuntimeTaskBundle` objects
-- serves bundles through a resident HTTP environment server
-- executes simulated tools with timeout isolation
-- computes benign and risk-track evaluation without runtime LLM scoring
+Its role is to make the following explicit:
 
-The core runtime loop is:
+- what the agent sees
+- what tools it can use
+- what state changes
+- how success is checked
+- how attacked scenarios differ from clean scenarios
+- how transcripts and outcomes become reward-bearing artifacts
 
-1. start an episode from a task id and scenario
-2. expose `user_query` and tool schemas to the agent
-3. accept tool calls through the server
-4. update state and reward traces
-5. finish the episode and expose task success, risk success, and transcript data
+That is why it appears late in the tutorial rather than at the beginning.
 
 ## Advanced / Reference Material
 
