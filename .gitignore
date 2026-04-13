@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+examples/tutorial/generated/*
+!examples/tutorial/generated/.gitkeep
+examples/tutorial/generated/**/*.jsonl
+examples/tutorial/generated/**/results/
+examples/tutorial/generated/**/manifest.json
+examples/tutorial/generated/**/summary.json

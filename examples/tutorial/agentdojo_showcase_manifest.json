@@ -1,0 +1,26 @@
+{
+  "manifest_version": "v1",
+  "name": "tutorial_agentdojo_showcase_slice",
+  "purpose": "Held-out showcase slice for demonstrating that tutorial-trained policies transfer to realistic tool-agent tasks.",
+  "source_benchmark": "agentdojo",
+  "recommended_extraction": {
+    "benchmark_version": "v1.2",
+    "extraction_track": "utility_attack_paired",
+    "suites": [
+      "workspace",
+      "slack",
+      "travel",
+      "banking"
+    ],
+    "limit": 20
+  },
+  "metrics": [
+    "utility",
+    "utility_under_attack",
+    "ASR"
+  ],
+  "notes": [
+    "This manifest is intentionally a slice definition, not a vendored benchmark dump.",
+    "Use it after the capstone training run to compare before/after behavior on held-out AgentDojo-style tasks."
+  ]
+}

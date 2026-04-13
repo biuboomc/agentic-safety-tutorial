@@ -1,0 +1,49 @@
+{
+  "manifest_version": "v1",
+  "name": "tutorial_agentic_safety_curriculum",
+  "description": "A small curriculum for the agentic safety tutorial. It stays transparent enough for teaching while still exercising clean and attacked scenarios.",
+  "source_tasks_file": "examples/tutorial/tutorial_source_tasks.json",
+  "metrics": [
+    "utility",
+    "utility_under_attack",
+    "ASR"
+  ],
+  "warmup_task_ids": [
+    "tutorial_calendar_summary"
+  ],
+  "train_task_ids": [
+    "tutorial_banking_bill_pay",
+    "tutorial_workspace_release_review"
+  ],
+  "eval_task_ids": [
+    "tutorial_banking_bill_pay",
+    "tutorial_workspace_release_review"
+  ],
+  "available_scenarios": {
+    "tutorial_calendar_summary": [
+      "clean"
+    ],
+    "tutorial_banking_bill_pay": [
+      "clean",
+      "attacked"
+    ],
+    "tutorial_workspace_release_review": [
+      "clean",
+      "attacked"
+    ]
+  },
+  "attack_surfaces": [
+    "query",
+    "tool_return"
+  ],
+  "budget_hint": {
+    "max_gpus": 4,
+    "gpu_type": "A100",
+    "max_hours": 24
+  },
+  "build_command": "python scripts/tutorial_build_curriculum.py --backend placeholder --output-dir examples/tutorial/generated",
+  "notes": [
+    "Use the warmup task to teach the core tool-calling loop before introducing attacks.",
+    "The two curriculum tasks are small enough for a tutorial-scale training run but still expose clear benign and risk objectives."
+  ]
+}
