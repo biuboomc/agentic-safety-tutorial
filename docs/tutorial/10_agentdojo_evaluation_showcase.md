@@ -1,4 +1,4 @@
-# Chapter 10: AgentDojo Showcase
+# Chapter 10: AgentDojo Evaluation Showcase
 
 ## Why This Chapter Exists
 
@@ -18,7 +18,7 @@ A held-out showcase slice is enough to demonstrate:
 - whether it resists injected instructions better than before
 - whether the curriculum taught something more general than memorized toy behavior
 
-## What A Showcase Slice Should Measure
+## What This Chapter Evaluates
 
 The tutorial keeps the same high-level metrics:
 
@@ -48,6 +48,16 @@ See:
 - [agentdojo_showcase_manifest.json](../../examples/tutorial/agentdojo_showcase_manifest.json)
 
 It defines a held-out extraction slice rather than shipping benchmark data inside the repository.
+
+## Resource Requirements
+
+### Minimum to read the chapter
+- CPU only
+
+### Minimum to execute the showcase
+- CPU
+- model API or local inference server
+- extracted or prebuilt showcase catalog
 
 ## Final Lesson
 

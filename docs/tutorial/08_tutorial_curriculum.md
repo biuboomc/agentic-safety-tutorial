@@ -2,7 +2,7 @@
 
 ## Why This Chapter Exists
 
-The capstone should be real enough to teach the right lessons, but small enough to run on a modest budget.
+The training pipeline should be real enough to teach the right lessons, but small enough to run on a modest budget.
 
 That is why the tutorial uses a deliberately small curriculum rather than a full benchmark.
 
@@ -79,4 +79,4 @@ The curriculum is the object that lets us connect:
 - evaluation metrics
 - trainer-facing rollout records
 
-Next: [Chapter 9](09_slime_capstone.md)
+Next: [Chapter 9](09_slime_training_pipeline.md)

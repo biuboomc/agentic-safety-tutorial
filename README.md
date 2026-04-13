@@ -9,7 +9,7 @@ The central claim of this tutorial is simple:
 - once that system can act, safety becomes a question about **behavior and outcomes**, not only text
 
 That is why this repository does not start from benchmark conversion or infrastructure APIs.  
-It starts from the conceptual arc of modern agentic systems, then gradually introduces `tasksvc`, benchmark slices, and `slime` as capstone tools.
+It starts from the conceptual arc of modern agentic systems, then gradually introduces `tasksvc`, benchmark slices, and `slime` as training-and-evaluation tools.
 
 ## Why This Tutorial Exists
 
@@ -49,7 +49,7 @@ By the end, you should be able to:
 - distinguish ordinary LLM safety from **agentic safety**
 - reason about prompt injection, tool misuse, state corruption, and verification loops
 - represent a safety task as an executable environment with explicit benign and risk goals
-- connect environment rollouts to a training stack and run a small safety-oriented capstone
+- connect environment rollouts to a training stack and run a small safety-oriented training pipeline
 
 ## Core Concepts You Will See Repeatedly
 
@@ -88,13 +88,13 @@ Best for readers new to agents.
 7. [Safety Requirements](docs/tutorial/05_safety_requirements.md)
 8. [Evaluating Safe Agents](docs/tutorial/06_evaluating_safe_agents.md)
 
-### Path B: Capstone-first
+### Path B: Training-system-first
 Best for readers who already know agent basics and want the environment/training path.
 
 1. [tasksvc as an Environment](docs/tutorial/07_tasksvc_as_environment.md)
 2. [Tutorial Curriculum](docs/tutorial/08_tutorial_curriculum.md)
-3. [Slime Capstone](docs/tutorial/09_slime_capstone.md)
-4. [AgentDojo Showcase](docs/tutorial/10_agentdojo_showcase.md)
+3. [Slime Training Pipeline](docs/tutorial/09_slime_training_pipeline.md)
+4. [AgentDojo Evaluation Showcase](docs/tutorial/10_agentdojo_evaluation_showcase.md)
 5. [Research Map](docs/tutorial/11_research_map.md)
 
 ### Path C: Research-first
@@ -150,7 +150,7 @@ python scripts/tutorial_export_slime_dataset.py ^
   --output-path examples/tutorial/generated/slime_train.jsonl
 ```
 
-### 6. Launch the capstone training wrapper
+### 6. Launch the training wrapper
 
 ```bash
 python scripts/tutorial_train_with_slime.py ^
@@ -160,6 +160,56 @@ python scripts/tutorial_train_with_slime.py ^
 ```
 
 The repository does not vendor `slime`; it provides the adapter layer that makes the training boundary explicit.
+
+## Resource-Based Navigation
+
+Different parts of the tutorial need very different resources.
+
+### CPU-only / no external API
+Good for reading and local environment inspection.
+
+- [Tutorial Index](docs/tutorial/README.md)
+- [Overview](docs/tutorial/00_overview.md)
+- [Why Agents](docs/tutorial/01_why_agents.md)
+- [Tool-Calling Agents](docs/tutorial/02_tool_calling_agents.md)
+- [Agent Fragility](docs/tutorial/03_agent_fragility.md)
+- [Attack Surfaces](docs/tutorial/04_attack_surfaces.md)
+- [Safety Requirements](docs/tutorial/05_safety_requirements.md)
+- [Evaluating Safe Agents](docs/tutorial/06_evaluating_safe_agents.md)
+- [Research Map](docs/tutorial/11_research_map.md)
+
+### CPU + local task runtime
+Good for understanding environment packaging and running placeholder examples.
+
+- [tasksvc as an Environment](docs/tutorial/07_tasksvc_as_environment.md)
+- [Tutorial Curriculum](docs/tutorial/08_tutorial_curriculum.md)
+- [Tutorial source tasks](examples/tutorial/tutorial_source_tasks.json)
+- [Tutorial curriculum manifest](examples/tutorial/tutorial_curriculum_manifest.json)
+- [Build curriculum script](scripts/tutorial_build_curriculum.py)
+- [Start server script](scripts/tutorial_start_server.py)
+
+### API model required
+Good for live agent rollouts and batch data collection.
+
+- [Single rollout script](scripts/tutorial_run_single_rollout.py)
+- [Curriculum batch rollout script](scripts/tutorial_run_curriculum_batch.py)
+- [AgentDojo evaluation showcase](docs/tutorial/10_agentdojo_evaluation_showcase.md)
+- [Showcase eval script](scripts/tutorial_run_showcase_eval.py)
+
+### Training resources required
+Good for readers who want the full training path.
+
+- [Slime Training Pipeline](docs/tutorial/09_slime_training_pipeline.md)
+- [Slime export adapter](tasksvc/tutorial/slime_adapter.py)
+- [Slime dataset export script](scripts/tutorial_export_slime_dataset.py)
+- [Slime training launcher](scripts/tutorial_train_with_slime.py)
+
+### Suggested resource profile
+
+- **Concept chapters:** CPU only
+- **Environment chapters:** CPU only, no external model required if you use `placeholder`
+- **Rollout collection:** one model API endpoint or local inference server
+- **Training chapter:** trainer resources, ideally GPUs, with the tutorial target kept within roughly 4 A100s / 24h
 
 ## Tutorial Assets
 
@@ -172,7 +222,7 @@ The repository does not vendor `slime`; it provides the adapter layer that makes
 ## Repository Layout
 
 - `docs/tutorial/`
-  - concept chapters, capstone chapters, and research map
+  - concept chapters, training/evaluation chapters, and research map
 - `examples/tutorial/`
   - hand-authored warmup and safety curriculum tasks
 - `tasksvc/`
@@ -180,13 +230,13 @@ The repository does not vendor `slime`; it provides the adapter layer that makes
 - `tasksvc/tutorial/`
   - tutorial-facing adapters, including the slime export layer
 - `scripts/`
-  - tutorial entrypoints for building curricula, running rollouts, exporting records, and launching capstone steps
+  - tutorial entrypoints for building curricula, running rollouts, exporting records, and launching training/evaluation steps
 - `tests/`
   - smoke tests for rollout, conversion, and tutorial-specific assets
 
 ## Where `tasksvc` Fits
 
-`tasksvc` is not the whole tutorial. It is the **capstone infrastructure**.
+`tasksvc` is not the whole tutorial. It is the **training-and-evaluation infrastructure**.
 
 Its role is to make the following explicit:
 

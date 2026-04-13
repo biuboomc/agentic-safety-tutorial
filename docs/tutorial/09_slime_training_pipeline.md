@@ -1,9 +1,9 @@
-# Chapter 9: Slime Capstone
+# Chapter 9: Slime Training Pipeline
 
 ## Why This Chapter Exists
 
 The earlier chapters argue that agentic safety must be treated as a systems problem.  
-This chapter turns that argument into a concrete training path.
+This chapter turns that argument into a concrete **training pipeline**.
 
 The point is not to build a massive training stack from scratch.  
 The point is to make the boundary between environment and trainer explicit and usable.
@@ -50,14 +50,14 @@ The adapter turns tasksvc batch results into a stable JSONL format that keeps:
 - clean and attacked transcripts
 - summary metadata for downstream training or analysis
 
-## Recommended Capstone Flow
+## Recommended Training Flow
 
 1. build the tutorial curriculum
 2. start the local environment server
 3. run curriculum rollouts
 4. export slime-ready JSONL
 5. launch a slime run
-6. compare pre-training and post-training behavior on a held-out slice
+6. compare pre-training and post-training behavior on a held-out evaluation slice
 
 ## Key Scripts
 
@@ -66,6 +66,19 @@ The adapter turns tasksvc batch results into a stable JSONL format that keeps:
 - run curriculum rollouts: [tutorial_run_curriculum_batch.py](../../scripts/tutorial_run_curriculum_batch.py)
 - export training data: [tutorial_export_slime_dataset.py](../../scripts/tutorial_export_slime_dataset.py)
 - start training: [tutorial_train_with_slime.py](../../scripts/tutorial_train_with_slime.py)
+
+## Resource Requirements
+
+### Minimum to read the chapter
+- CPU only
+
+### Minimum to execute the data pipeline
+- CPU
+- one model API endpoint or local inference server
+
+### Recommended for training
+- trainer resources, ideally GPUs
+- tutorial target budget: roughly 4 A100s / 24h
 
 ## What To Keep Fixed In Early Experiments
 
@@ -82,7 +95,7 @@ And vary only a small number of trainer-side choices, such as:
 - training steps
 - clean/attacked mixture ratio
 
-That makes the capstone easier to reason about.
+That makes the training pipeline easier to reason about.
 
 ## Why This Still Counts As A Safety Tutorial
 
@@ -95,4 +108,4 @@ The point is to show that once safety is represented as:
 
 it becomes trainable without losing the system-level framing.
 
-Next: [Chapter 10](10_agentdojo_showcase.md)
+Next: [Chapter 10](10_agentdojo_evaluation_showcase.md)

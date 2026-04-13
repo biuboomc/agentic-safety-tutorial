@@ -29,12 +29,12 @@ The second half is about the **system**:
 - [05 Safety Requirements](05_safety_requirements.md)
 - [06 Evaluating Safe Agents](06_evaluating_safe_agents.md)
 
-## Part III: Capstone
+## Part III: Training And Evaluation System
 
 - [07 tasksvc as an Environment](07_tasksvc_as_environment.md)
 - [08 Tutorial Curriculum](08_tutorial_curriculum.md)
-- [09 Slime Capstone](09_slime_capstone.md)
-- [10 AgentDojo Showcase](10_agentdojo_showcase.md)
+- [09 Slime Training Pipeline](09_slime_training_pipeline.md)
+- [10 AgentDojo Evaluation Showcase](10_agentdojo_evaluation_showcase.md)
 
 ## Appendix
 
