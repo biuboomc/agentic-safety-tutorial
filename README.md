@@ -24,9 +24,9 @@ The field has moved fast:
 In other words, the center of gravity has shifted:
 
 - from prompt engineering
-- to workflow design
+- to **context engineering**
 - to **agent engineering**
-- and, increasingly, to **harness engineering** and **context engineering**
+- and, increasingly, to **harness engineering** 
 
 This tutorial is about that shift, with agentic safety as the main lens.
 
